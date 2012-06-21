@@ -1,0 +1,80 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<title>Book Find</title> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+	<script>  </script>
+</head> 
+
+<body> 
+
+<div data-role="page">
+
+	<div data-role="header">
+	<form action="">
+		<label for="search-basic" ><b>Find BOOK</b></label>
+		<input type="search" name="search" id="search-basic" value="" data-theme="c"/>
+		</form>
+		<h1></h1>
+		
+	</div><!-- /header -->
+
+	<div data-role="content" >
+	
+		<ul data-role="listview" id="content">
+		</ul>	 
+		
+	</div><!-- /content -->
+	
+	<div data-role="footer">
+		<h4>Find Book</h4>
+	</div><!-- /footer -->
+	
+</div><!-- /page -->
+
+<script>
+      function handleResponse(response) {
+      for (var i = 0; i < response.length; i++) {
+	   //alert(response);
+        var item = response[i];
+		//alert(item.id);
+        // in production code, item.text should have the HTML entities escaped.
+       $("#content").prepend("<li> <img src="+item.volumeInfo.imageLinks.thumbnail+
+	                        " /><h3>"+ item.volumeInfo.title+
+							"</h3><p><b>"+item.volumeInfo.authors+
+							"</b></p><p> "+ item.volumeInfo.description+
+							"</p></li>").listview("refresh");;
+      }
+    }
+    </script>
+  
+	
+	<script>
+	function searchBook(query){
+	$.ajax({
+			type: "GET",
+			url: "https://www.googleapis.com/books/v1/volumes?",
+			data: { q: query},
+		    dataType:"json",		
+			success: function (data){ handleResponse(data.items);}
+			
+		});
+		
+		}
+		
+		$("form").submit( 
+			function(){
+			console.log( $("#search-basic").val()); 
+			var request =$("#search-basic").val();
+			searchBook(request);
+			return false; });
+	</script>
+
+
+</body>
+</html>
